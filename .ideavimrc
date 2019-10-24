@@ -1,0 +1,268 @@
+" source ~/.config/nvim/init.vim
+set surround
+
+" 與作業系統共用 Clipboard
+" 欲將系統剪貼簿的內容貼入 Vim 前，需先按 <F2> 鍵。
+set clipboard=unnamed
+set undolevels=700
+
+" no temp or backup files
+set noswapfile
+set nobackup
+set nowritebackup
+
+set statusline^=%{coc#status()}
+
+
+"--------------------------------------------------------------
+" 應用系統層級設定
+
+
+set nocompatible            " Disable compatibility to old-time vi
+set encoding=UTF-8
+
+set backspace=2
+"set backspace=indent,start,eol
+
+set mouse=a
+
+set hidden
+set noshowmode
+set showmatch               " Show matching brackets.
+set nolazyredraw
+
+set showcmd
+
+
+" 倒刪鍵不刪 EOL
+" 標示多餘空白【務必放在 ColorScheme 設定之前】
+"autocmd ColorScheme * highlight ExtraWhitespace ctermbg=red guibg=red
+"autocmd InsertLeave * match ExtraWhitespace /\s\+$/
+
+
+"--------------------------------------------------------------
+" 檔案作業
+
+
+" 停用 backup 與 swap 功能
+set nobackup
+set nowritebackup
+set noswapfile
+
+
+"--------------------------------------------------------------
+" 視窗管理
+set splitbelow      " 水平切割時，在下產生新視窗
+set splitright      " 垂直切割時，在右產生新視窗
+
+" 切割視窗指令：
+"  - 水平切割： :sp   ==>  :10sp [FileName]10+
+"  - 垂直切割： :vsp  ==>  :vsp [FileName]
+
+"<C-w>_ ：視窗高度最大化（適用於水平切割視窗）
+"<C-w>| ：視窗寬度最大化（適用於垂直切割視窗）
+"<C-w>= ：視窗寬高平均化（適用於任何切割視窗）
+
+" <C-w>r: Swap top/bottom or left/right splitjj
+" <C-w>t: Break out current window into a new tabview
+" <C-w>o: Close every window in the current tabview but the current one
+"map <c-j> <c-w>j
+"map <c-k> <c-w>k
+"map <c-l> <c-w>l
+"map <c-h> <c-w>h
+
+" 在 Tab 視窗移動
+map <Leader>p <esc>:tabprevious<CR>
+map <Leader>n <esc>:tabnext<CR>
+
+
+
+"==============================================================
+" 程式碼排版
+"==============================================================
+
+
+" 令程式碼檔案可有語法（Syntax）高亮標示
+filetype off
+filetype plugin indent on
+syntax on
+
+
+" 程式碼排版規範
+set colorcolumn=80          " 設定每行能放 80 個字元
+"set nowrap                  " 不用依據 colorcolumn 的規範，在自動換行
+set wrap                    " 設定自動換行
+set autoindent              " indent a new line the same amount as the line just typed
+
+" 行號顯示
+set nu                      " 顯示行號
+set relativenumber          " 在遊標所在處顯示相對行號
+
+set cursorline
+
+" Tabs and spaces handling
+set tabstop=2
+set shiftwidth=2
+set softtabstop=2
+set shiftround
+set expandtab
+
+
+" 設定〔行號〕顯示模式
+nmap <Leader>nr :set relativenumber<CR>
+nmap <Leader>nn :set norelativenumber<CR>
+
+
+" 文字搜尋：Serach configuration
+set ignorecase              " 搜尋時怱略英文字母的大小寫
+set smartcase               " turn on smartcase
+set incsearch
+set hlsearch                " highlight search results
+
+
+" 清除搜尋完後的醒目提示
+noremap <F12> :nohl<CR>
+vnoremap <F12> :nohl<CR>
+inoremap <F12> :nohl<CR>
+
+
+"--------------------------------------------------------------
+" Python
+
+" 內縮格式
+autocmd FileType python setlocal expandtab shiftwidth=4 softtabstop=4
+
+
+" 排版格式：PEP-008
+au BufNewFile,BufRead *.py
+      \ set tabstop=4 |
+      \ set softtabstop=4 |
+      \ set shiftwidth=4 |
+      \ set textwidth=79 |
+      \ set expandtab |
+      \ set autoindent |
+      \ set fileformat=unix |
+      \ let b:comment_leader='#'
+
+
+" 自動去除不必要的空白
+highlight BadWhitespace ctermbg=red guibg=darkred
+au BufRead,BufNewFile *.py,*.pyw,*.c,*.h match BadWhitespace /^\t\+/
+au BufRead,BufNewFile *.py,*.pyw,*.c,*.h match BadWhitespace /\s\+$/
+
+
+"--------------------------------------------------------------
+" Web
+
+" 內縮格式
+autocmd FileType javascript setlocal ts=2 sts=2 sw=2
+autocmd FileType html setlocal shiftwidth=2 tabstop=2 softtabstop=2
+autocmd FileType css setlocal shiftwidth=2 tabstop=2 softtabstop=2
+autocmd FileType xml setlocal shiftwidth=2 tabstop=2 softtabstop=2
+
+" 排版格式
+autocmd BufNewFile,BufRead *.js, *.html, *.css
+      \ set tabstop=2 |
+      \ set softtabstop=2 |
+      \ set shiftwidth=2
+
+" 註解格式
+au BufNewFile,BufRead *.js let b:comment_leader='//'
+au BufNewFile,BufRead *.html let b:comment_leader='<!--'
+au BufNewFile,BufRead *.css let b:comment_leader='/*'
+
+
+
+
+"======================================================================
+" 快速鍵設定
+"======================================================================
+
+" 進入「貼上（Paste）」模式
+set pastetoggle=<F2>
+
+
+" 滑䑕指標可切換 tab
+" 離開插入模式，回返一般模式
+imap jj <Esc>
+
+imap <C-,> <Esc>A,<left>
+imap <Leader><Leader> <Esc>A,
+
+" 拆疊／展開開關
+nmap <Space> za
+
+" 退出
+noremap <Leader>e :quit<CR>  " Exit current window
+noremap <Leader>E :qa!<CR>   " Exit all windows
+
+
+"--------------------------------------------------------------
+" 檔案作業
+
+
+" 儲存檔案
+nmap <Leader>w :update<CR>
+imap <Leader>w <C-O>:update<CR>
+vmap <Leader>w <C-C>:update<CR>
+
+
+" 設定檔作業
+
+" 編輯設定檔
+nmap <Leader>i :tabnew ~/.config/nvim/init.vim<CR>
+
+" 依據設定檔重啟設定
+nmap <Leader>I :source ~/.config/nvim/init.vim<CR>
+nmap <Leader>s :source %<CR>
+
+
+"--------------------------------------------------------------
+" 程式碼編輯
+
+
+" Python 專用
+imap <Leader>, <Esc>A,
+imap <M-,> <Right>,<Space>
+
+imap <Leader>. <Esc>A.
+imap <M-.> <Right>.<Space>
+
+imap :: <Esc>A:
+imap <C-:> <Right>:<Left>
+
+imap ;; <Esc>A;
+
+imap <Leader>O <Esc>O
+imap <Leader>o <Esc>o
+
+
+" JavaScript
+imap <Leader>{ <Esc>A<Space>{}<Left>
+imap <Leader>$ $();<Left><Left>
+
+
+" 搬移文字
+nnoremap <M-j> :m .+1<CR>==
+nnoremap <M-k> :m .-2<CR>==
+inoremap <M-j> <Esc>:m .+1<CR>==gi
+inoremap <M-k> <Esc>:m .-2<CR>==gi
+vnoremap <M-j> :m '>+1<CR>gv=gv
+vnoremap <M-k> :m '<-2<CR>gv=gv
+
+nnoremap <M-Up> :m .+1<CR>==
+nnoremap <M-Down> :m .-2<CR>==
+
+;======================
+; Emulated Vim Plugins
+;======================
+
+; surround
+; Emulates vim-surround
+; Commands: ys, cs, ds, S
+set surround
+
+; multiple-cursors
+; Emulates vim-multiple-cursors
+; Commands: <A-n>, <A-x>, <A-p>, g<A-n>
+set multiple-cursors
